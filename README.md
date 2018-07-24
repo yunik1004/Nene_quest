@@ -34,5 +34,5 @@ For every OS,
 ```
 ${VCPKG_ROOT} is the path where the Vcpkg is installed.
 
-For Windows 10,
-Open 'CMakeSettings.json' and modify the path of cmakeCommandArgs-DCMAKE_TOOLCHAIN_FILE into ${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
+If you want to open cmake project using visual studio,
+open 'CMakeSettings.json' and modify the path of cmakeCommandArgs-DCMAKE_TOOLCHAIN_FILE into ${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
