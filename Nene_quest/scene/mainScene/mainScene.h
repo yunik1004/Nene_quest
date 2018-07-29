@@ -8,9 +8,10 @@
 class mainScene : public Scene {
 private:
 	GLuint vertexbuffer;
+	static void keyCallback(GLFWwindow *, int, int, int, int);
 public:
-	Camera camera;
-	mainScene(GLFWwindow *);
+	mainScene(void);
 	~mainScene(void);
+	Camera camera;
 	Scene* update(void);
 };

@@ -2,8 +2,6 @@
 #include <iostream>
 #include "../scene/mainScene/mainScene.h"
 
-static Scene *scene_next;
-
 using namespace std;
 
 Window::Window(char* name) {
@@ -58,21 +56,25 @@ Window::Window(char* name) {
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
-
-	scene = new mainScene(window);
 }
 
 Window::~Window(void) {
-	delete scene;
+	if (scene != NULL) {
+		delete scene;
+	}
 	glfwTerminate();
 }
 
 void Window::scene_update(void) {
-	scene_next = scene->update();
+	Scene *scene_next = scene->update();
 	if (scene_next != scene) {
 		delete scene;
 		scene = scene_next;
 	}
+}
+
+void Window::setScene(Scene *newScene) {
+	scene = newScene;
 }
 
 void Window::render(void) {
@@ -81,6 +83,10 @@ void Window::render(void) {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
+}
+
+void Window::setKeyCallback(GLFWkeyfun cbfun) {
+	glfwSetKeyCallback(window, cbfun);
 }
 
 void Window::errorCallback(int errorCode, const char *errorDescription) {
@@ -104,4 +110,18 @@ void Window::windowSizeCallback(GLFWwindow *window, int w, int h) {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+}
+
+Window *main_window;
+
+Window *getMainWindow(void) {
+	return main_window;
+}
+
+void setMainWindow(Window *window) {
+	if (main_window != NULL) {
+		cerr << "Error: Main window is not empty" << endl;
+	}
+
+	main_window = window;
 }

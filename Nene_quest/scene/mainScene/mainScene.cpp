@@ -1,5 +1,8 @@
 #include "mainScene.h"
 #include <glm/glm.hpp>
+#include "../../window/window.h"
+
+extern Window *main_window;
 
 static GLuint mainScene_compile_shaders(void) {
 	const GLchar *vertex_shader_src =
@@ -23,12 +26,14 @@ static GLuint mainScene_compile_shaders(void) {
 	return program;
 }
 
-mainScene::mainScene(GLFWwindow *window) {
+mainScene::mainScene(void) {
+	Window *main_window = getMainWindow();
+	main_window->setKeyCallback(&mainScene::keyCallback);
+
 	camera = Camera();
 	rendering_program = mainScene_compile_shaders();
 	glGenVertexArrays(1, &vertex_array_object);
 	glBindVertexArray(vertex_array_object);
-	this->window = window;
 
 	// Triangle vertex
 	static const GLfloat g_vertex_buffer_data[] = {
@@ -44,6 +49,19 @@ mainScene::mainScene(GLFWwindow *window) {
 mainScene::~mainScene(void) {
 	glDeleteVertexArrays(1, &vertex_array_object);
 	glDeleteProgram(rendering_program);
+}
+
+void mainScene::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
+	switch (key)
+	{
+	case GLFW_KEY_ESCAPE:
+		if (action == GLFW_PRESS) {
+			glfwSetWindowShouldClose(window, GLFW_TRUE);
+		}
+		break;
+	default:
+		break;
+	}
 }
 
 Scene *mainScene::update(void) {

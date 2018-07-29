@@ -17,5 +17,10 @@ public:
 	~Window(void);
 	GLFWwindow *window;
 	Scene *scene;
+	void setScene(Scene *);
 	void render(void);
+	void setKeyCallback(GLFWkeyfun);
 };
+
+Window *getMainWindow(void);
+void setMainWindow(Window *);
