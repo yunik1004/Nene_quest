@@ -2,10 +2,10 @@
 #include <glm/glm.hpp>
 
 static GLuint mainScene_compile_shaders(void) {
-	const GLchar* vertex_shader_src =
+	const GLchar *vertex_shader_src =
 #include "shader.vert"
 ;
-	const GLchar* fragment_shader_src =
+	const GLchar *fragment_shader_src =
 #include "shader.frag"
 ;
 	
@@ -23,7 +23,7 @@ static GLuint mainScene_compile_shaders(void) {
 	return program;
 }
 
-mainScene::mainScene(GLFWwindow* window) {
+mainScene::mainScene(GLFWwindow *window) {
 	camera = Camera();
 	rendering_program = mainScene_compile_shaders();
 	glGenVertexArrays(1, &vertex_array_object);
@@ -46,7 +46,7 @@ mainScene::~mainScene(void) {
 	glDeleteProgram(rendering_program);
 }
 
-Scene* mainScene::update(void) {
+Scene *mainScene::update(void) {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glUseProgram(rendering_program);
 

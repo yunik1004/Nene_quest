@@ -10,7 +10,7 @@ private:
 	GLuint vertexbuffer;
 public:
 	Camera camera;
-	mainScene(GLFWwindow* window);
+	mainScene(GLFWwindow *);
 	~mainScene(void);
 	Scene* update(void);
 };

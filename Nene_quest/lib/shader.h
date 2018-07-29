@@ -2,4 +2,4 @@
 
 #include <GL/glew.h>
 
-GLuint compile_shader(const GLchar* shaderSrc, const GLenum shaderType);
+GLuint compile_shader(const GLchar *, const GLenum);
