@@ -1,6 +1,8 @@
 #include "mainScene.h"
 #include <glm/glm.hpp>
 #include "../../window/window.h"
+#include "../../audio/audio.h"
+#include "../../resource.h"
 
 extern Window *main_window;
 
@@ -27,6 +29,10 @@ static GLuint mainScene_compile_shaders(void) {
 }
 
 mainScene::mainScene(void) {
+	Audio *audio = new Audio(TEST_WAV);
+	audio->play();
+	audio->setLoop(true);
+
 	Window *main_window = getMainWindow();
 	main_window->setKeyCallback(&mainScene::keyCallback);
 
