@@ -2,7 +2,7 @@
 //
 
 #include "scene/mainScene/mainScene.h"
-#include "window/window.h"
+#include "lib/window.h"
 
 int main(int argc, char *argv[]) {
 	Window *main_window = new Window("Nene Quest");

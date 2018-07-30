@@ -1,7 +1,7 @@
 #include "mainScene.h"
 #include <glm/glm.hpp>
-#include "../../window/window.h"
-#include "../../audio/audio.h"
+#include "../../lib/window.h"
+#include "../../lib/audio.h"
 #include "../../resource.h"
 
 extern Window *main_window;
