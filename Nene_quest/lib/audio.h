@@ -17,8 +17,8 @@ private:
 	ALCcontext *context;
 	ALuint source;
 	ALuint buffer;
-	void parseWAV(char *);
-	void exitWithError(char *);
+	bool isLoadSuccess;
+	int parseWAV(char *);
 public:
 	Audio(char *);
 	~Audio(void);

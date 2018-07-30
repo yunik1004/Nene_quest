@@ -1,10 +1,13 @@
 #include "mainScene.h"
+#include <iostream>
 #include <glm/glm.hpp>
+#include <ft2build.h>
+#include FT_FREETYPE_H
 #include "../../lib/window.h"
 #include "../../lib/audio.h"
 #include "../../resource.h"
 
-extern Window *main_window;
+using namespace std;
 
 static GLuint mainScene_compile_shaders(void) {
 	const GLchar *vertex_shader_src =
@@ -29,10 +32,29 @@ static GLuint mainScene_compile_shaders(void) {
 }
 
 mainScene::mainScene(void) {
+	/* Audio */
 	Audio *audio = new Audio(TEST_WAV);
 	audio->play();
 	audio->setLoop(true);
 
+	/* Font */
+	/*
+	FT_Library ft;
+	if (FT_Init_FreeType(&ft)) {
+		cout << "Error: Could not init FreeType Library" << endl;
+	}
+	FT_Face face;
+	if (FT_New_Face(ft, "fonts/arial.ttf", 0, &face)) {
+		cout << "Error: Failed to load font" << endl;
+	}
+
+	FT_Set_Pixel_Sizes(face, 0, 48);
+	
+	if (FT_Load_Char(face, 'X', FT_LOAD_RENDER)) {
+		cout << "Error: Failed to load Glyph" << endl;
+	}*/
+
+	/* Create scene */
 	Window *main_window = getMainWindow();
 	main_window->setKeyCallback(&mainScene::keyCallback);
 

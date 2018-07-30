@@ -5,24 +5,27 @@ cmake_minimum_required (VERSION 3.8)
 
 set (APP_TARGET nenequest)
 
-# opengl
+# OpenGL
 find_package (OpenGL REQUIRED)
 include_directories (${OPENGL_INCLUDE_DIRS})
 
-# glfw
+# GLFW3
 find_package (glfw3 REQUIRED)
 include_directories(${GLFW_INCLUDE_DIRS})
 link_libraries (${GLFW_LIBRARY_DIRS})
 
-# glew
+# GLEW
 find_package (GLEW REQUIRED)
 include_directories (${GLEW_INCLUDE_DIRS})
 
-# glm
+# GLM
 find_package (glm REQUIRED)
 
-# openal
+# OpenAl-soft
 find_package (OpenAL CONFIG REQUIRED)
+
+# FreeType
+find_package(Freetype REQUIRED)
 
 # Add source to this project's executable.
 file (GLOB_RECURSE src_files ./*)
@@ -37,6 +40,7 @@ target_link_libraries (${APP_TARGET}
 	${GLEW_LIBRARIES}
 	glm
 	OpenAL::OpenAL
+	Freetype::Freetype
 )
 
 # TODO: Add tests and install targets if needed.

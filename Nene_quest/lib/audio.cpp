@@ -2,20 +2,29 @@
 #include <iostream>
 #include <cstdio>
 
+#define WAV_FAILURE 0
+#define WAV_SUCCESS 1
+
 using namespace std;
 
 Audio::Audio(char *filename) {
-	parseWAV(filename);
+	isLoadSuccess = false;
+
+	if (parseWAV(filename) == WAV_FAILURE) {
+		return;
+	}
 
 	device = alcOpenDevice(NULL);
 	if (!device) {
-		exitWithError("No sound device");
+		cerr << "Error: No sound device" << endl;
+		return;
 	}
 
 	context = alcCreateContext(device, NULL);
 	alcMakeContextCurrent(context);
 	if (!context) {
-		exitWithError("No sound context");
+		cerr << "Error: No sound context" << endl;
+		return;
 	}
 
 	ALuint frequency = sampleRate;
@@ -24,7 +33,8 @@ Audio::Audio(char *filename) {
 	alGenBuffers(1, &buffer);
 	alGenSources(1, &source);
 	if (alGetError() != AL_NO_ERROR) {
-		exitWithError("Error GenSource");
+		cerr << "Error: Error GenSource" << endl;
+		return;
 	}
 
 	if (bitsPerSample == 8) {
@@ -45,12 +55,14 @@ Audio::Audio(char *filename) {
 	}
 
 	if (!format) {
-		exitWithError("Wrong BitsPerSample");
+		cerr << "Error: Wrong BitsPerSample" << endl;
+		return;
 	}
 
 	alBufferData(buffer, format, buf, dataSize, frequency);
 	if (alGetError() != AL_NO_ERROR) {
-		exitWithError("Error loading AlBuffer");
+		cerr << "Error: Error loading AlBuffer" << endl;
+		return;
 	}
 
 	/* Sound setting variables */
@@ -72,39 +84,66 @@ Audio::Audio(char *filename) {
 	alSourcefv(source, AL_POSITION, SourcePos);
 	alSourcefv(source, AL_VELOCITY, SourceVel);
 	alSourcei(source, AL_LOOPING, AL_FALSE);
+
+	isLoadSuccess = true;
 }
 
 Audio::~Audio(void) {
-	delete[] buf;
-	alDeleteSources(1, &source);
-	alDeleteBuffers(1, &buffer);
+	if (buf) {
+		delete[] buf;
+	}
+	if (source) {
+		alDeleteSources(1, &source);
+	}
+	if (buffer) {
+		alDeleteBuffers(1, &buffer);
+	}
+
 	alcMakeContextCurrent(NULL);
-	alcDestroyContext(context);
-	alcCloseDevice(device);
+
+	if (context) {
+		alcDestroyContext(context);
+	}
+	if (device) {
+		alcCloseDevice(device);
+	}
 }
 
 void Audio::play(void) {
+	if (!isLoadSuccess) {
+		return;
+	}
+
 	alSourcePlay(source);
 	if (alGetError() != AL_NO_ERROR) {
-		exitWithError("Error playing sound");
+		cerr << "Error: Error playing sound" << endl;
 	}
 }
 
 void Audio::setLoop(int isLoop) {
+	if (!isLoadSuccess) {
+		return;
+	}
+
 	alSourcei(source, AL_LOOPING, isLoop);
 }
 
 void Audio::stop(void) {
+	if (!isLoadSuccess) {
+		return;
+	}
+
 	alSourceStop(source);
 	if (alGetError() != AL_NO_ERROR) {
-		exitWithError("Error stopping sound");
+		cerr << "Error: Error stopping sound" << endl;
 	}
 }
 
-void Audio::parseWAV(char *filename) {
+int Audio::parseWAV(char *filename) {
 	FILE *fp = fopen(filename, "rb");
 	if (!fp) {
-		exitWithError("Can't find WAV file");
+		cerr << "Error: Can't find WAV file" << endl;
+		return WAV_FAILURE;
 	}
 
 	char type[5];
@@ -115,14 +154,17 @@ void Audio::parseWAV(char *filename) {
 
 	type[4] = '\0';
 	if (fread(type, sizeof(char), 4, fp) != 4 || strcmp(type, "RIFF") != 0) {
-		exitWithError("Not RIFF");
+		cerr << "Error: Not RIFF" << endl;
+		return WAV_FAILURE;
 	}
 	fread(&size, sizeof(DWORD), 1, fp);
 	if (fread(type, sizeof(char), 4, fp) != 4 || strcmp(type, "WAVE") != 0) {
-		exitWithError("Not WAVE");
+		cerr << "Error: Not WAVE" << endl;
+		return WAV_FAILURE;
 	}
 	if (fread(type, sizeof(char), 4, fp) != 4 || strcmp(type, "fmt ") != 0) {
-		exitWithError("Not fmt");
+		cerr << "Error: Not fmt" << endl;
+		return WAV_FAILURE;
 	}
 	fread(&chunkSize, sizeof(DWORD), 1, fp);
 	fread(&formatType, sizeof(short), 1, fp);
@@ -132,7 +174,8 @@ void Audio::parseWAV(char *filename) {
 	fread(&bytesPerSample, sizeof(short), 1, fp);
 	fread(&bitsPerSample, sizeof(short), 1, fp);
 	if (fread(type, sizeof(char), 4, fp) != 4 || strcmp(type, "data") != 0) {
-		exitWithError("Missing data");
+		cerr << "Error: Missing data" << endl;
+		return WAV_FAILURE;
 	}
 	fread(&dataSize, sizeof(DWORD), 1, fp);
 
@@ -140,9 +183,6 @@ void Audio::parseWAV(char *filename) {
 	fread(buf, sizeof(BYTE), dataSize, fp);
 
 	fclose(fp);
-}
 
-void Audio::exitWithError(char *msg) {
-	cerr << "Error: " << msg << endl;
-	exit(EXIT_FAILURE);
+	return WAV_SUCCESS;
 }
