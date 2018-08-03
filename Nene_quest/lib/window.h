@@ -9,7 +9,6 @@
 
 class Window {
 private:
-	static void errorCallback(int, const char *);
 	static void windowSizeCallback(GLFWwindow *, int, int);
 	void scene_update(void);
 public:

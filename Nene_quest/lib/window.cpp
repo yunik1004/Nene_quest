@@ -5,21 +5,6 @@
 using namespace std;
 
 Window::Window(char* name) {
-	glfwSetErrorCallback(&Window::errorCallback);
-
-	/* Initialize glfw */
-	if (!glfwInit()) {
-		cerr << "Error: Fail to initialize GLFW" << endl;
-		exit(EXIT_FAILURE);
-	}
-
-	/* OpenGL version : 3.3 */
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
 	/* Window size, name */
 	window = glfwCreateWindow(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT, name, NULL, NULL);
 	if (!window) {
@@ -51,11 +36,16 @@ Window::Window(char* name) {
 		exit(EXIT_FAILURE);
 	}
 
-	if (!GLEW_VERSION_3_3) {
-		cerr << "OpenGL 3.3 API is not avaliable." << endl;
+	if (!GLEW_VERSION_4_3) {
+		cerr << "OpenGL 4.3 API is not avaliable." << endl;
 		glfwTerminate();
 		exit(EXIT_FAILURE);
 	}
+
+	// Set OpenGL options
+	glEnable(GL_CULL_FACE);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 Window::~Window(void) {
@@ -87,10 +77,6 @@ void Window::render(void) {
 
 void Window::setKeyCallback(GLFWkeyfun cbfun) {
 	glfwSetKeyCallback(window, cbfun);
-}
-
-void Window::errorCallback(int errorCode, const char *errorDescription) {
-	fprintf(stderr, "Error: %s\n", errorDescription);
 }
 
 void Window::windowSizeCallback(GLFWwindow *window, int w, int h) {

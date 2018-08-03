@@ -50,4 +50,5 @@ For Linux or OSX, change 'windows' to 'linux' or 'osx'.
 
 If you want to open cmake project using Visual Studio,
 open 'CMakeSettings.json' and modify the path of cmakeCommandArgs-DCMAKE_TOOLCHAIN_FILE into ${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake
-Next, open  the CMake project from the Visual Studio by opening 'CMakeLists.txt' file in the base directory.
+
+Next, open the CMake project from the Visual Studio by opening 'CMakeLists.txt' file in the base directory.
