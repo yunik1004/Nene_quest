@@ -91,10 +91,10 @@ void Window::windowSizeCallback(GLFWwindow *window, int w, int h) {
 
 	GLfloat sizeFactor = widthFactor < heightFactor ? widthFactor : heightFactor;
 
-	GLint modifiedWidth =  ceil(DEFAULT_WINDOW_WIDTH * sizeFactor) + 1;
-	GLint modifiedHeight = ceil(DEFAULT_WINDOW_HEIGHT * sizeFactor) + 1;
+	GLint modifiedWidth =  (int) ceil(DEFAULT_WINDOW_WIDTH * sizeFactor) + 1;
+	GLint modifiedHeight = (int) ceil(DEFAULT_WINDOW_HEIGHT * sizeFactor) + 1;
 
-	glViewport(floor((w - modifiedWidth) / 2.0), floor((h - modifiedHeight) / 2.0), modifiedWidth, modifiedHeight);
+	glViewport((int)floor((w - modifiedWidth) / 2.0), (int)floor((h - modifiedHeight) / 2.0), modifiedWidth, modifiedHeight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
