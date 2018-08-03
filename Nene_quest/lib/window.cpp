@@ -53,7 +53,6 @@ Window::~Window(void) {
 	if (scene != NULL) {
 		delete scene;
 	}
-	glfwTerminate();
 }
 
 void Window::scene_update(void) {

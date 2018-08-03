@@ -35,6 +35,8 @@ int main(int argc, char *argv[]) {
 	main_window->render();
 
 	delete main_window;
+
+	glfwTerminate();
 	return 0;
 }
 
