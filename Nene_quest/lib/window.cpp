@@ -1,5 +1,6 @@
 #include "window.h"
 #include <iostream>
+#include <cmath>
 #include "../scene/mainScene/mainScene.h"
 
 using namespace std;
@@ -17,7 +18,7 @@ Window::Window(char* name) {
 
 	/* Resizability */
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
-	//glfwSetWindowAspectRatio(window, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+	glfwSetWindowAspectRatio(window, DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
 
 	glfwMakeContextCurrent(window);
 	glClearColor(0, 0, 0, 1);
@@ -68,7 +69,13 @@ void Window::setScene(Scene *newScene) {
 }
 
 void Window::render(void) {
+	GLint m_viewport[4];
+
 	while (!glfwWindowShouldClose(window)) {
+		glGetIntegerv(GL_VIEWPORT, m_viewport);
+		glScissor(m_viewport[0], m_viewport[1], m_viewport[2], m_viewport[3]);
+		glEnable(GL_SCISSOR_TEST);
+
 		scene_update();
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -85,10 +92,10 @@ void Window::windowSizeCallback(GLFWwindow *window, int w, int h) {
 
 	GLfloat sizeFactor = widthFactor < heightFactor ? widthFactor : heightFactor;
 
-	GLfloat modifiedWidth = DEFAULT_WINDOW_WIDTH * sizeFactor;
-	GLfloat modifiedHeight = DEFAULT_WINDOW_HEIGHT * sizeFactor;
+	GLint modifiedWidth =  ceil(DEFAULT_WINDOW_WIDTH * sizeFactor) + 1;
+	GLint modifiedHeight = ceil(DEFAULT_WINDOW_HEIGHT * sizeFactor) + 1;
 
-	glViewport((int)(((float)w - modifiedWidth) / 2.0), (int)(((float)h - modifiedHeight) / 2.0), (int)modifiedWidth, (int)modifiedHeight);
+	glViewport(floor((w - modifiedWidth) / 2.0), floor((h - modifiedHeight) / 2.0), modifiedWidth, modifiedHeight);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
