@@ -4,17 +4,15 @@
 #include <GLFW/glfw3.h>
 #include "../scene.h"
 #include "../../camera/camera.h"
-#include "../../lib/model.h"
-#include "../../lib/text.h"
+#include "../../lib/audio.h"
 
-class mainScene : public Scene {
+class playScene : public Scene {
 private:
-	ModelOBJ *title;
-	Text *text;
+	Audio *audio;
 	Camera camera;
 	static void keyCallback(GLFWwindow *, int, int, int, int);
 public:
-	mainScene(void);
-	~mainScene(void);
+	playScene(void);
+	~playScene(void);
 	Scene* update(void);
 };

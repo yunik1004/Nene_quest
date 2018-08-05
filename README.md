@@ -19,6 +19,7 @@ Install 64bit static version of following libraries by using Vcpkg:
 - GLM
 - OpenAL-soft
 - FreeType
+- libpng
 
 For Windows,
 ```
@@ -28,6 +29,7 @@ For Windows,
 > ./vcpkg install glm:x64-windows-static
 > ./vcpkg install openal-soft:x64-windows-static
 > ./vcpkg install freetype:x64-windows-static
+> ./vcpkg install libpng:x64-windows-static
 ```
 
 For Linux or OSX, change 'windows' to 'linux' or 'osx'.

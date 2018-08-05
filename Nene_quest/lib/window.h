@@ -4,8 +4,8 @@
 #include <GLFW/glfw3.h>
 #include "../scene/scene.h"
 
-#define DEFAULT_WINDOW_WIDTH (1920 / 2)
-#define DEFAULT_WINDOW_HEIGHT (1080 / 2)
+#define DEFAULT_WINDOW_WIDTH 960	// (1920 / 2)
+#define DEFAULT_WINDOW_HEIGHT 540	// (1080 / 2)
 
 class Window {
 private:

@@ -2,9 +2,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
+#include "../lib/window.h"
 
 Camera::Camera(void) {
-	projection = glm::ortho(0.0f, 800.0f, 0.0f, 600.0f);
+	projection = glm::ortho(0.0f, (float)DEFAULT_WINDOW_WIDTH, 0.0f, (float)DEFAULT_WINDOW_HEIGHT);
 
 	view = glm::lookAt(
 		glm::vec3(0, 0, 1),

@@ -3,7 +3,6 @@
 #include <iostream>
 #include <map>
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <ft2build.h>
 #include FT_FREETYPE_H
@@ -29,5 +28,5 @@ public:
 	~Text(void);
 	void setPixelHeight(FT_UInt);
 	void setMVP(const GLfloat *);
-	void renderText(char *, GLfloat, GLfloat, GLfloat, glm::vec3);
+	void renderText(char *, glm::vec2, GLfloat, glm::vec3);
 };

@@ -2,15 +2,12 @@
 #include <iostream>
 #include <cstdio>
 
-#define WAV_FAILURE 0
-#define WAV_SUCCESS 1
-
 using namespace std;
 
 Audio::Audio(char *filename) {
 	isLoadSuccess = false;
 
-	if (parseWAV(filename) == WAV_FAILURE) {
+	if (!parseWAV(filename)) {
 		return;
 	}
 
@@ -139,11 +136,12 @@ void Audio::stop(void) {
 	}
 }
 
-int Audio::parseWAV(char *filename) {
-	FILE *fp = fopen(filename, "rb");
+bool Audio::parseWAV(char *filename) {
+	FILE *fp;
+	fopen_s(&fp, filename, "rb");
 	if (!fp) {
 		cerr << "Error: Can't find WAV file" << endl;
-		return WAV_FAILURE;
+		return false;
 	}
 
 	char type[5];
@@ -155,16 +153,16 @@ int Audio::parseWAV(char *filename) {
 	type[4] = '\0';
 	if (fread(type, sizeof(char), 4, fp) != 4 || strcmp(type, "RIFF") != 0) {
 		cerr << "Error: Not RIFF" << endl;
-		return WAV_FAILURE;
+		return false;
 	}
 	fread(&size, sizeof(DWORD), 1, fp);
 	if (fread(type, sizeof(char), 4, fp) != 4 || strcmp(type, "WAVE") != 0) {
 		cerr << "Error: Not WAVE" << endl;
-		return WAV_FAILURE;
+		return false;
 	}
 	if (fread(type, sizeof(char), 4, fp) != 4 || strcmp(type, "fmt ") != 0) {
 		cerr << "Error: Not fmt" << endl;
-		return WAV_FAILURE;
+		return false;
 	}
 	fread(&chunkSize, sizeof(DWORD), 1, fp);
 	fread(&formatType, sizeof(short), 1, fp);
@@ -175,7 +173,7 @@ int Audio::parseWAV(char *filename) {
 	fread(&bitsPerSample, sizeof(short), 1, fp);
 	if (fread(type, sizeof(char), 4, fp) != 4 || strcmp(type, "data") != 0) {
 		cerr << "Error: Missing data" << endl;
-		return WAV_FAILURE;
+		return false;
 	}
 	fread(&dataSize, sizeof(DWORD), 1, fp);
 
@@ -184,5 +182,5 @@ int Audio::parseWAV(char *filename) {
 
 	fclose(fp);
 
-	return WAV_SUCCESS;
+	return true;
 }

@@ -1,4 +1,5 @@
 #include "text.h"
+#include <glm/gtc/type_ptr.hpp>
 #include "shader.h"
 #include "../resource.h"
 
@@ -11,19 +12,8 @@ static GLuint text_compile_shaders(void) {
 	const GLchar *fragment_shader_src =
 #include "text.frag"
 ;
-	
-	GLuint vertex_shader = compile_shader(vertex_shader_src, GL_VERTEX_SHADER);
-	GLuint fragment_shader = compile_shader(fragment_shader_src, GL_FRAGMENT_SHADER);
-	GLuint program = glCreateProgram();
 
-	glAttachShader(program, vertex_shader);
-	glAttachShader(program, fragment_shader);
-	glLinkProgram(program);
-
-	glDeleteShader(vertex_shader);
-	glDeleteShader(fragment_shader);
-
-	return program;
+	return VF_compile_shader(vertex_shader_src, fragment_shader_src);
 }
 
 Text::Text(char *fontPath) {
@@ -46,16 +36,13 @@ Text::Text(char *fontPath) {
 
 	rendering_program = text_compile_shaders();
 
-	/* Configure VAO/VBO for texture quads */
+	/* Configure VAO */
 	glGenVertexArrays(1, &VAO);
-	glBindVertexArray(VAO);
+
+	/* Configure VBO for texture quads */
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);	/* quad */
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
 
 	isLoadSuccess = true;
 }
@@ -81,11 +68,15 @@ Text::~Text(void) {
 		return;
 	}
 
+	for (auto const& c : characters) {
+		glDeleteTextures(1, &c.second.textureID);
+	}
+
+	characters.clear();
+
 	glDeleteBuffers(1, &VBO);
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteProgram(rendering_program);
-
-	characters.clear();
 }
 
 void Text::setPixelHeight(FT_UInt pixel_height) {
@@ -97,19 +88,36 @@ void Text::setPixelHeight(FT_UInt pixel_height) {
 }
 
 void Text::setMVP(const GLfloat *value) {
-	GLuint MatrixID = glGetUniformLocation(rendering_program, "MVP");
-	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value);
-}
-
-void Text::renderText(char *text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color) {
 	if (!isLoadSuccess) {
 		return;
 	}
 
-	glUseProgram(rendering_program);
-	glUniform3f(glGetUniformLocation(rendering_program, "textColor"), color.x, color.y, color.z);
-	glActiveTexture(GL_TEXTURE0);
+	GLuint MatrixID = glGetUniformLocation(rendering_program, "MVP");
+	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value);
+}
+
+void Text::renderText(char *text, glm::vec2 coord, GLfloat scale, glm::vec3 color) {
+	if (!isLoadSuccess) {
+		return;
+	}
+
+	GLfloat x = coord.x;
+	GLfloat y = coord.y;
+
+	/* Bind VAO */
 	glBindVertexArray(VAO);
+
+	/* Use shader */
+	glUseProgram(rendering_program);
+
+	glUniform3fv(glGetUniformLocation(rendering_program, "textColor"), 1, glm::value_ptr(color));
+
+	glActiveTexture(GL_TEXTURE0);
+
+	/* 1st attribute buffer : vertices */
+	glEnableVertexAttribArray(0);
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), (void *)0);
 
 	const char *p;
 	for (p = text; *p; p++) {
@@ -142,9 +150,7 @@ void Text::renderText(char *text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3
 		glBindTexture(GL_TEXTURE_2D, ch.textureID);
 
 		/* Update content of VBO memory */
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
 		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 		/* Render quad */
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -153,8 +159,7 @@ void Text::renderText(char *text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3
 		x += (ch.advance / 64) * scale;
 	}
 
-	glBindVertexArray(0);
-	glBindTexture(GL_TEXTURE_2D, 0);
+	glDisableVertexAttribArray(0);
 }
 
 Character Text::loadChar(FT_ULong c) {

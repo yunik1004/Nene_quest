@@ -25,7 +25,10 @@ find_package (glm REQUIRED)
 find_package (OpenAL CONFIG REQUIRED)
 
 # FreeType
-find_package(Freetype REQUIRED)
+find_package (Freetype REQUIRED)
+
+# libpng
+find_package (PNG REQUIRED)
 
 # Add source to this project's executable.
 file (GLOB_RECURSE cpp_files ./*.cpp)
@@ -43,6 +46,7 @@ target_link_libraries (${APP_TARGET}
 	glm
 	OpenAL::OpenAL
 	Freetype::Freetype
+	PNG::PNG
 )
 
 # Scan through resource folder for updated files and copy if none existing or changed

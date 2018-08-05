@@ -18,7 +18,7 @@ private:
 	ALuint source;
 	ALuint buffer;
 	bool isLoadSuccess;
-	int parseWAV(char *);
+	bool parseWAV(char *);
 public:
 	Audio(char *);
 	~Audio(void);
