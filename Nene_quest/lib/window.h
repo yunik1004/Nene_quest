@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _WINDOW_H
+#define _WINDOW_H
 
 #include <gl/glew.h>
 #include <GLFW/glfw3.h>
@@ -23,3 +24,5 @@ public:
 
 Window *getMainWindow(void);
 void setMainWindow(Window *);
+
+#endif // !_WINDOW_H

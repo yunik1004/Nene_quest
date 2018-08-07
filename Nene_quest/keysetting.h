@@ -1,3 +1,6 @@
+#ifndef _KEYSETTING_H
+#define _KEYSETTING_H
+
 #include <gl/glew.h>
 #include <GLFW/glfw3.h>
 
@@ -14,3 +17,5 @@
 #define KEY_JUMP	GLFW_KEY_X
 
 #define KEY_PAUSE	GLFW_KEY_P
+
+#endif // !_KEYSETTING_H

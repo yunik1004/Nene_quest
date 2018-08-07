@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _PLAYSCENE_H
+#define _PLAYSCENE_H
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -16,3 +17,5 @@ public:
 	~playScene(void);
 	Scene* update(void);
 };
+
+#endif // !_PLAYSCENE_H

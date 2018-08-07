@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _RESOURCE_H
+#define _RESOURCE_H
 
 /* Define directories */
 #define RES_DIR "resources/"
@@ -17,3 +18,5 @@
 
 /* Play scene */
 #define TEST_WAV SOUND_DIR "test.wav"
+
+#endif // !_RESOURCE_H

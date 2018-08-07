@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _CAMERA_H
+#define _CAMERA_H
 
 #include <glm/glm.hpp>
 
@@ -12,3 +13,5 @@ public:
 	glm::mat4 mp(glm::mat4);
 	glm::mat4 mp(void);
 };
+
+#endif // !_CAMERA_H

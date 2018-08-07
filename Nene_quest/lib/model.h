@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _MODEL_H
+#define _MODEL_H
 
 #include <GL/glew.h>
 #include <glm/glm.hpp>
@@ -21,3 +22,5 @@ public:
 	void ModelOBJ::setMVP(const GLfloat *);
 	void render(void);
 };
+
+#endif // !_MODEL_H

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _AUDIO_H
+#define _AUDIO_H
 
 #include <AL/al.h>
 #include <AL/alc.h>
@@ -26,3 +27,5 @@ public:
 	void play(void);
 	void stop(void);
 };
+
+#endif // !_AUDIO_H

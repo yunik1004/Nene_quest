@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _TEXT_H
+#define _TEXT_H
 
 #include <iostream>
 #include <map>
@@ -30,3 +31,5 @@ public:
 	void setMVP(const GLfloat *);
 	void renderText(char *, glm::vec2, GLfloat, glm::vec3);
 };
+
+#endif // !_TEXT_H

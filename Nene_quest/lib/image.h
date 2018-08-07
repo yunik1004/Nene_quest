@@ -1,4 +1,5 @@
-#pragma once
+#ifndef _IMAGE_H
+#define _IMAGE_H
 
 #include <gl/glew.h>
 #include <GLFW/glfw3.h>
@@ -15,3 +16,5 @@ public:
 };
 
 GLuint loadTexturePNG(const char *);
+
+#endif // !_IMAGE_H
