@@ -1,5 +1,10 @@
 ﻿// Nene_quest.cpp : Defines the entry point for the application.
 //
+#ifdef _MSC_VER
+#ifndef _DEBUG
+#pragma comment(linker, "/subsystem:windows /ENTRY:mainCRTStartup")
+#endif // !_DEBUG
+#endif // !_MSC_VER
 
 #include <gl/glew.h>
 #include <GLFW/glfw3.h>
