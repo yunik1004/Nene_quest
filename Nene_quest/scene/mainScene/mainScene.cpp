@@ -128,14 +128,16 @@ Scene *mainScene::update(void) {
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glm::mat4 mvp = camera.mp();
+	
+	glm::mat4 mvp_text = camera.mp();
 
 	/* Title */
-	title->setMVP(&mvp[0][0]);
-	title->render(glm::vec3(0.0f, 0.0f, 0.0f), 1.0f);
+	//glm::mat4 mvp_title = camera.mvp(glm::mat4(1.0f));
+	title->setMVP(&mvp_text[0][0]);
+	title->render();
 
 	/* Text */
-	text->setMVP(&mvp[0][0]);
+	text->setMVP(&mvp_text[0][0]);
 	text->renderText("1 Player Game", glm::vec2(390.0f, 130.0f), 1.0f, glm::vec3(0.3f, 0.3f, 0.3f));
 	text->renderText("2 Player Game", glm::vec2(390.0f, 80.0f), 1.0f, glm::vec3(0.3f, 0.3f, 0.3f));
 	text->renderText("E       x       i       t", glm::vec2(390.0f, 30.0f), 1.0f, glm::vec3(0.3f, 0.3f, 0.3f));

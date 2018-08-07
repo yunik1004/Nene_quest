@@ -20,6 +20,7 @@ Install 64bit static version of following libraries by using Vcpkg:
 - OpenAL-soft
 - FreeType
 - libpng
+- tinyobjloader
 
 For Windows,
 ```
@@ -30,6 +31,7 @@ For Windows,
 > ./vcpkg install openal-soft:x64-windows-static
 > ./vcpkg install freetype:x64-windows-static
 > ./vcpkg install libpng:x64-windows-static
+> ./vcpkg install tinyobjloader:x64-windows-static
 ```
 
 For Linux or OSX, change 'windows' to 'linux' or 'osx'.

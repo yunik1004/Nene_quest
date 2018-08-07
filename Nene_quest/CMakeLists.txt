@@ -5,6 +5,9 @@ cmake_minimum_required (VERSION 3.8)
 
 set (APP_TARGET nenequest)
 
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MT")
+set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MTd")
+
 # OpenGL
 find_package (OpenGL REQUIRED)
 include_directories (${OPENGL_INCLUDE_DIRS})
@@ -30,6 +33,9 @@ find_package (Freetype REQUIRED)
 # libpng
 find_package (PNG REQUIRED)
 
+# tinyobjloader
+find_package (tinyobjloader CONFIG REQUIRED)
+
 # Add source to this project's executable.
 file (GLOB_RECURSE cpp_files ./*.cpp)
 file (GLOB_RECURSE h_files ./*.h)
@@ -47,6 +53,7 @@ target_link_libraries (${APP_TARGET}
 	OpenAL::OpenAL
 	Freetype::Freetype
 	PNG::PNG
+	tinyobjloader
 )
 
 # Scan through resource folder for updated files and copy if none existing or changed
