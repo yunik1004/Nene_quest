@@ -24,6 +24,20 @@ ModelOBJ::ModelOBJ(const char *objFilename, const char *uvFilename) {
 	std::string err;
 
 	bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, objFilename);
+	if (!err.empty()) {
+		cerr << err << endl;
+		return;
+	}
+	if (!ret) {
+		cerr << "Fail to load obj file" << endl;
+		return;
+	}
+
+	printf("# of vertices  = %d\n", (int)(attrib.vertices.size()) / 3);
+	printf("# of normals   = %d\n", (int)(attrib.normals.size()) / 3);
+	printf("# of texcoords = %d\n", (int)(attrib.texcoords.size()) / 2);
+	printf("# of materials = %d\n", (int)materials.size());
+	printf("# of shapes    = %d\n", (int)shapes.size());
 }
 
 ModelOBJ::~ModelOBJ(void) {

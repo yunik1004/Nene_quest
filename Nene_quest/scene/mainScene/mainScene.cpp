@@ -38,14 +38,20 @@ mainScene::mainScene(void) {
 	camera = Camera();
 
 	/* Title */
-	title = new ModelOBJ(TITLE_OBJ, TITLE_UV);
+	title = new Text(TITLE_FONT);
 
 	/* Text */
-	text = new Text(NEW_GAME_FONT);
+	menu = new Text(NEW_GAME_FONT);
+
+	/* Cursor */
+	cursor = new Text(NEW_GAME_FONT);
+
+	/* Timer */
+	timer = Timer();
 
 	/* Background color - white */
-	glClearColor(1.0, 1.0, 1.0, 0.0);
-
+	glClearColor(255 / 255.0, 253 / 255.0 , 252 / 255.0, 0.0);
+	
 	/* State */
 	key_state = STATE_IDLE;
 	cursor_state = CURSOR_1P;
@@ -53,8 +59,15 @@ mainScene::mainScene(void) {
 }
 
 mainScene::~mainScene(void) {
-	delete title;
-	delete text;
+	if (title) {
+		delete title;
+	}
+	if (menu) {
+		delete menu;
+	}
+	if (cursor) {
+		delete cursor;
+	}
 }
 
 void mainScene::keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
@@ -115,14 +128,21 @@ Scene *mainScene::update(void) {
 	switch (key_state)
 	{
 	case STATE_IDLE:
+		timer.unsetTimer();
 		break;
 	case STATE_UP:
-		cursor_state = static_cast<CURSOR_STATE> (max(cursor_state - 1, (int)CURSOR_1P));
+		if (timer.isFinish()) {
+			timer.setTime(500);
+			timer.startTimer();
+			cursor_state = static_cast<CURSOR_STATE> (max(cursor_state - 1, (int)CURSOR_1P));
+		}
 		break;
 	case STATE_DOWN:
-		cursor_state = static_cast<CURSOR_STATE> (min(cursor_state + 1, (int)CURSOR_EXIT));
-		break;
-	default:
+		if (timer.isFinish()) {
+			timer.setTime(500);
+			timer.startTimer();
+			cursor_state = static_cast<CURSOR_STATE> (min(cursor_state + 1, (int)CURSOR_EXIT));
+		}
 		break;
 	}
 
@@ -132,18 +152,39 @@ Scene *mainScene::update(void) {
 	glm::mat4 mvp_text = camera.mp();
 
 	/* Title */
-	//glm::mat4 mvp_title = camera.mvp(glm::mat4(1.0f));
 	title->setMVP(&mvp_text[0][0]);
-	title->render();
+	title->renderText("NENE QUEST", glm::vec2(230.0f, 330.0f), 96, glm::vec3(1.0f, 0.3f, 0.3f));
 
 	/* Text */
-	text->setMVP(&mvp_text[0][0]);
-	text->renderText("1 Player Game", glm::vec2(390.0f, 130.0f), 1.0f, glm::vec3(0.3f, 0.3f, 0.3f));
-	text->renderText("2 Player Game", glm::vec2(390.0f, 80.0f), 1.0f, glm::vec3(0.3f, 0.3f, 0.3f));
-	text->renderText("E       x       i       t", glm::vec2(390.0f, 30.0f), 1.0f, glm::vec3(0.3f, 0.3f, 0.3f));
+	glm::vec2 player_1_loc = glm::vec2(350.0f, 130.0f);
+	glm::vec2 player_2_loc = glm::vec2(350.0f, 80.0f);
+	glm::vec2 exit_loc = glm::vec2(350.0f, 30.0f);
+
+	glm::vec3 menu_color = glm::vec3(0.3f, 0.3f, 0.3f);
+
+	menu->setMVP(&mvp_text[0][0]);
+	menu->renderText("1 Player Game", player_1_loc, 48, menu_color);
+	menu->renderText("2 Player Game", player_2_loc, 48, menu_color);
+	menu->renderText("E      x      i      t", exit_loc, 48, menu_color);
 
 	/* Cursor */
-	// To be implemented
+	glm::vec2 cursor_loc;
+	switch (cursor_state)
+	{
+	case CURSOR_1P:
+		cursor_loc = player_1_loc;
+		break;
+	case CURSOR_2P:
+		cursor_loc = player_2_loc;
+		break;
+	case CURSOR_EXIT:
+		cursor_loc = exit_loc;
+		break;
+	}
+	cursor_loc -= glm::vec2(40.0f, 0.0f);
+
+	cursor->setMVP(&mvp_text[0][0]);
+	cursor->renderText(">", cursor_loc, 48, menu_color);
 
 	return this;
 }

@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
 	/* Create window */
 	Window *main_window = new Window("Nene Quest");
 	setMainWindow(main_window);
+	main_window->setWindowPos_middle();
 
 	main_window->setScene(new mainScene());
 	main_window->render();

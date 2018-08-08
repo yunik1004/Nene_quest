@@ -14,7 +14,8 @@
 #define TITLE_OBJ MODEL_DIR "nene_quest.obj"
 #define TITLE_UV MODEL_DIR "nene_quest_UV.png"
 
-#define NEW_GAME_FONT FONT_DIR "BebasNeue_Regular.ttf"
+#define TITLE_FONT FONT_DIR "bullpen_3d.ttf"
+#define NEW_GAME_FONT FONT_DIR "TmonTium.ttf"
 
 /* Play scene */
 #define TEST_WAV SOUND_DIR "test.wav"

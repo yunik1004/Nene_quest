@@ -104,6 +104,19 @@ void Window::windowSizeCallback(GLFWwindow *window, int w, int h) {
 	glLoadIdentity();
 }
 
+void Window::setWindowPos(int xpos, int ypos) {
+	glfwSetWindowPos(window, xpos, ypos);
+}
+
+void Window::setWindowPos_middle(void) {
+	const GLFWvidmode *mode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+	
+	int width_interval = (int) floor((mode->width - DEFAULT_WINDOW_WIDTH) / 2.0 + 0.5);
+	int height_interval = (int) floor((mode->height - DEFAULT_WINDOW_HEIGHT) / 2.0 + 0.5);
+
+	setWindowPos(width_interval, height_interval);
+}
+
 Window *main_window;
 
 Window *getMainWindow(void) {

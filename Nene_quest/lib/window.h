@@ -20,6 +20,8 @@ public:
 	void setScene(Scene *);
 	void render(void);
 	void setKeyCallback(GLFWkeyfun);
+	void setWindowPos(int, int);
+	void setWindowPos_middle(void);
 };
 
 Window *getMainWindow(void);

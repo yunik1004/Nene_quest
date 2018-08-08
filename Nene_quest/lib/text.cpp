@@ -30,7 +30,7 @@ Text::Text(char *fontPath) {
 	}
 
 	/* Set size to load glyphs */
-	FT_Set_Pixel_Sizes(face, 0, 48);
+	FT_Set_Pixel_Sizes(face, 0, 96);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
@@ -79,14 +79,6 @@ Text::~Text(void) {
 	glDeleteProgram(rendering_program);
 }
 
-void Text::setPixelHeight(FT_UInt pixel_height) {
-	if (!isLoadSuccess) {
-		return;
-	}
-
-	FT_Set_Pixel_Sizes(face, 0, pixel_height);
-}
-
 void Text::setMVP(const GLfloat *value) {
 	if (!isLoadSuccess) {
 		return;
@@ -96,10 +88,12 @@ void Text::setMVP(const GLfloat *value) {
 	glUniformMatrix4fv(MatrixID, 1, GL_FALSE, value);
 }
 
-void Text::renderText(char *text, glm::vec2 coord, GLfloat scale, glm::vec3 color) {
+void Text::renderText(char *text, glm::vec2 coord, FT_UInt size, glm::vec3 color) {
 	if (!isLoadSuccess) {
 		return;
 	}
+
+	FT_Set_Pixel_Sizes(face, 0, size);
 
 	GLfloat x = coord.x;
 	GLfloat y = coord.y;
@@ -123,18 +117,18 @@ void Text::renderText(char *text, glm::vec2 coord, GLfloat scale, glm::vec3 colo
 	for (p = text; *p; p++) {
 		Character ch;
 		try {
-			ch = loadChar(*p);
+			ch = loadChar(*p, size);
 		}
 		catch (exception& e){
 			cerr << e.what() << endl;
 			continue;
 		}
 
-		GLfloat xpos = x + ch.bearing.x * scale;
-		GLfloat ypos = y - (ch.size.y - ch.bearing.y) * scale;
+		GLfloat xpos = x + ch.bearing.x;
+		GLfloat ypos = y - (ch.size.y - ch.bearing.y);
 
-		GLfloat w = ch.size.x * scale;
-		GLfloat h = ch.size.y * scale;
+		GLfloat w = (GLfloat) ch.size.x;
+		GLfloat h = (GLfloat) ch.size.y;
 
 		/* Update VBO for each character */
 		GLfloat vertices[6][4] = {
@@ -156,16 +150,16 @@ void Text::renderText(char *text, glm::vec2 coord, GLfloat scale, glm::vec3 colo
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 
 		/* Advance cursors for next glyph (advance := # of 1/64 pixels) */
-		x += (ch.advance / 64) * scale;
+		x += ch.advance / 64;
 	}
 
 	glDisableVertexAttribArray(0);
 }
 
-Character Text::loadChar(FT_ULong c) {
+Character Text::loadChar(FT_ULong c, FT_UInt size) {
 	/* If character already exists, then return */
-	map<FT_ULong, Character>::iterator itr;
-	if ((itr = characters.find(c)) != characters.end()) {
+	map<pair<FT_ULong, FT_UInt>, Character>::iterator itr;
+	if ((itr = characters.find(std::make_pair(c, size))) != characters.end()) {
 		return itr->second;
 	}
 
@@ -204,7 +198,7 @@ Character Text::loadChar(FT_ULong c) {
 		(GLfloat) face->glyph->advance.x
 	};
 
-	characters.insert(pair<FT_ULong, Character>(c, character));
+	characters.insert(pair<pair<FT_ULong, FT_UInt>, Character>(make_pair(c, size), character));
 	
 	return character;
 }

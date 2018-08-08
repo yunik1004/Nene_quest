@@ -5,14 +5,15 @@
 #include <GLFW/glfw3.h>
 #include "../scene.h"
 #include "../../camera/camera.h"
-#include "../../lib/model.h"
 #include "../../lib/text.h"
+#include "../../lib/timer.h"
 
 class mainScene : public Scene {
 private:
-	ModelOBJ *title;
-	ModelOBJ *title_shadow;
-	Text *text;
+	Text *title;
+	Text *menu;
+	Text *cursor;
+	Timer timer;
 	Camera camera;
 	static void keyCallback(GLFWwindow *, int, int, int, int);
 public:
